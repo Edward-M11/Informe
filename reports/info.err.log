@@ -1,0 +1,122 @@
+Traceback (most recent call last):
+  File "C:\Users\Edward Morales\miniconda3\envs\ml_venv\lib\site-packages\jupyter_cache\executors\utils.py", line 58, in single_nb_execution
+    executenb(
+  File "C:\Users\Edward Morales\miniconda3\envs\ml_venv\lib\site-packages\nbclient\client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "C:\Users\Edward Morales\miniconda3\envs\ml_venv\lib\site-packages\jupyter_core\utils\__init__.py", line 166, in wrapped
+    return loop.run_until_complete(inner)
+  File "C:\Users\Edward Morales\miniconda3\envs\ml_venv\lib\asyncio\base_events.py", line 647, in run_until_complete
+    return future.result()
+  File "C:\Users\Edward Morales\miniconda3\envs\ml_venv\lib\site-packages\nbclient\client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "C:\Users\Edward Morales\miniconda3\envs\ml_venv\lib\site-packages\nbclient\client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\Edward Morales\miniconda3\envs\ml_venv\lib\site-packages\nbclient\client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import pandas as pd
+import plotly.express as px
+
+# Asumiendo que tu DataFrame 'df' se ve así y está correctamente definido con tus datos...
+
+# ... (tu DataFrame 'df' ya está definido aquí) ...
+
+# Eliminar la fila que contiene "No es posible presentar los resultados..."
+df = df[df['CLASIFICACION 2020'] != 'No es posible presentar los resultados...']
+
+# Ahora, para obtener el recuento de clasificaciones por año, puedes hacer:
+recuento_2020 = df['CLASIFICACION 2020'].value_counts()
+recuento_2021 = df['CLASIFICACION 2021'].value_counts()
+recuento_2022 = df['CLASIFICACION 2022'].value_counts()
+recuento_2023 = df['CLASIFICACION 2023'].value_counts()
+
+# Para tener una tabla con todos los recuentos por año, podemos crear un nuevo DataFrame:
+recuento_total = pd.DataFrame({
+    '2020': recuento_2020,
+    '2021': recuento_2021,
+    '2022': recuento_2022,
+    '2023': recuento_2023
+}).fillna(0).astype(int)  # Llenamos los valores NaN con 0 y convertimos a enteros
+
+# Eliminar la fila con el texto no deseado en el recuento_total
+recuento_total = recuento_total.drop('No es posible presentar los resultados...')
+
+# Agregar una fila al final con los totales por año
+recuento_total.loc['Total'] = recuento_total.sum()
+
+
+df_long = recuento_total.drop('Total').reset_index().rename(columns={'index': 'Clasificación'}).melt(id_vars='Clasificación', var_name='Año', value_name='Número de Instituciones')
+
+# Crear la gráfica de barras interactiva
+fig = px.bar(df_long, x='Clasificación', y='Número de Instituciones', color='Año', barmode='group', title='Recuento de Clasificaciones por Año')
+
+# Mostrar la gráfica
+fig.show()
+recuento_total
+
+
+------------------
+
+
+[1;31m---------------------------------------------------------------------------[0m
+[1;31mKeyError[0m                                  Traceback (most recent call last)
+Cell [1;32mIn[6], line 26[0m
+[0;32m     18[0m recuento_total [38;5;241m=[39m pd[38;5;241m.[39mDataFrame({
+[0;32m     19[0m     [38;5;124m'[39m[38;5;124m2020[39m[38;5;124m'[39m: recuento_2020,
+[0;32m     20[0m     [38;5;124m'[39m[38;5;124m2021[39m[38;5;124m'[39m: recuento_2021,
+[0;32m     21[0m     [38;5;124m'[39m[38;5;124m2022[39m[38;5;124m'[39m: recuento_2022,
+[0;32m     22[0m     [38;5;124m'[39m[38;5;124m2023[39m[38;5;124m'[39m: recuento_2023
+[0;32m     23[0m })[38;5;241m.[39mfillna([38;5;241m0[39m)[38;5;241m.[39mastype([38;5;28mint[39m)  [38;5;66;03m# Llenamos los valores NaN con 0 y convertimos a enteros[39;00m
+[0;32m     25[0m [38;5;66;03m# Eliminar la fila con el texto no deseado en el recuento_total[39;00m
+[1;32m---> 26[0m recuento_total [38;5;241m=[39m [43mrecuento_total[49m[38;5;241;43m.[39;49m[43mdrop[49m[43m([49m[38;5;124;43m'[39;49m[38;5;124;43mNo es posible presentar los resultados...[39;49m[38;5;124;43m'[39;49m[43m)[49m
+[0;32m     28[0m [38;5;66;03m# Agregar una fila al final con los totales por año[39;00m
+[0;32m     29[0m recuento_total[38;5;241m.[39mloc[[38;5;124m'[39m[38;5;124mTotal[39m[38;5;124m'[39m] [38;5;241m=[39m recuento_total[38;5;241m.[39msum()
+
+File [1;32m~\miniconda3\envs\ml_venv\lib\site-packages\pandas\core\frame.py:5347[0m, in [0;36mDataFrame.drop[1;34m(self, labels, axis, index, columns, level, inplace, errors)[0m
+[0;32m   5199[0m [38;5;28;01mdef[39;00m [38;5;21mdrop[39m(
+[0;32m   5200[0m     [38;5;28mself[39m,
+[0;32m   5201[0m     labels: IndexLabel [38;5;241m|[39m [38;5;28;01mNone[39;00m [38;5;241m=[39m [38;5;28;01mNone[39;00m,
+[1;32m   (...)[0m
+[0;32m   5208[0m     errors: IgnoreRaise [38;5;241m=[39m [38;5;124m"[39m[38;5;124mraise[39m[38;5;124m"[39m,
+[0;32m   5209[0m ) [38;5;241m-[39m[38;5;241m>[39m DataFrame [38;5;241m|[39m [38;5;28;01mNone[39;00m:
+[0;32m   5210[0m [38;5;250m    [39m[38;5;124;03m"""[39;00m
+[0;32m   5211[0m [38;5;124;03m    Drop specified labels from rows or columns.[39;00m
+[0;32m   5212[0m 
+[1;32m   (...)[0m
+[0;32m   5345[0m [38;5;124;03m            weight  1.0     0.8[39;00m
+[0;32m   5346[0m [38;5;124;03m    """[39;00m
+[1;32m-> 5347[0m     [38;5;28;01mreturn[39;00m [38;5;28;43msuper[39;49m[43m([49m[43m)[49m[38;5;241;43m.[39;49m[43mdrop[49m[43m([49m
+[0;32m   5348[0m [43m        [49m[43mlabels[49m[38;5;241;43m=[39;49m[43mlabels[49m[43m,[49m
+[0;32m   5349[0m [43m        [49m[43maxis[49m[38;5;241;43m=[39;49m[43maxis[49m[43m,[49m
+[0;32m   5350[0m [43m        [49m[43mindex[49m[38;5;241;43m=[39;49m[43mindex[49m[43m,[49m
+[0;32m   5351[0m [43m        [49m[43mcolumns[49m[38;5;241;43m=[39;49m[43mcolumns[49m[43m,[49m
+[0;32m   5352[0m [43m        [49m[43mlevel[49m[38;5;241;43m=[39;49m[43mlevel[49m[43m,[49m
+[0;32m   5353[0m [43m        [49m[43minplace[49m[38;5;241;43m=[39;49m[43minplace[49m[43m,[49m
+[0;32m   5354[0m [43m        [49m[43merrors[49m[38;5;241;43m=[39;49m[43merrors[49m[43m,[49m
+[0;32m   5355[0m [43m    [49m[43m)[49m
+
+File [1;32m~\miniconda3\envs\ml_venv\lib\site-packages\pandas\core\generic.py:4711[0m, in [0;36mNDFrame.drop[1;34m(self, labels, axis, index, columns, level, inplace, errors)[0m
+[0;32m   4709[0m [38;5;28;01mfor[39;00m axis, labels [38;5;129;01min[39;00m axes[38;5;241m.[39mitems():
+[0;32m   4710[0m     [38;5;28;01mif[39;00m labels [38;5;129;01mis[39;00m [38;5;129;01mnot[39;00m [38;5;28;01mNone[39;00m:
+[1;32m-> 4711[0m         obj [38;5;241m=[39m [43mobj[49m[38;5;241;43m.[39;49m[43m_drop_axis[49m[43m([49m[43mlabels[49m[43m,[49m[43m [49m[43maxis[49m[43m,[49m[43m [49m[43mlevel[49m[38;5;241;43m=[39;49m[43mlevel[49m[43m,[49m[43m [49m[43merrors[49m[38;5;241;43m=[39;49m[43merrors[49m[43m)[49m
+[0;32m   4713[0m [38;5;28;01mif[39;00m inplace:
+[0;32m   4714[0m     [38;5;28mself[39m[38;5;241m.[39m_update_inplace(obj)
+
+File [1;32m~\miniconda3\envs\ml_venv\lib\site-packages\pandas\core\generic.py:4753[0m, in [0;36mNDFrame._drop_axis[1;34m(self, labels, axis, level, errors, only_slice)[0m
+[0;32m   4751[0m         new_axis [38;5;241m=[39m axis[38;5;241m.[39mdrop(labels, level[38;5;241m=[39mlevel, errors[38;5;241m=[39merrors)
+[0;32m   4752[0m     [38;5;28;01melse[39;00m:
+[1;32m-> 4753[0m         new_axis [38;5;241m=[39m [43maxis[49m[38;5;241;43m.[39;49m[43mdrop[49m[43m([49m[43mlabels[49m[43m,[49m[43m [49m[43merrors[49m[38;5;241;43m=[39;49m[43merrors[49m[43m)[49m
+[0;32m   4754[0m     indexer [38;5;241m=[39m axis[38;5;241m.[39mget_indexer(new_axis)
+[0;32m   4756[0m [38;5;66;03m# Case for non-unique axis[39;00m
+[0;32m   4757[0m [38;5;28;01melse[39;00m:
+
+File [1;32m~\miniconda3\envs\ml_venv\lib\site-packages\pandas\core\indexes\base.py:6992[0m, in [0;36mIndex.drop[1;34m(self, labels, errors)[0m
+[0;32m   6990[0m [38;5;28;01mif[39;00m mask[38;5;241m.[39many():
+[0;32m   6991[0m     [38;5;28;01mif[39;00m errors [38;5;241m!=[39m [38;5;124m"[39m[38;5;124mignore[39m[38;5;124m"[39m:
+[1;32m-> 6992[0m         [38;5;28;01mraise[39;00m [38;5;167;01mKeyError[39;00m([38;5;124mf[39m[38;5;124m"[39m[38;5;132;01m{[39;00mlabels[mask][38;5;241m.[39mtolist()[38;5;132;01m}[39;00m[38;5;124m not found in axis[39m[38;5;124m"[39m)
+[0;32m   6993[0m     indexer [38;5;241m=[39m indexer[[38;5;241m~[39mmask]
+[0;32m   6994[0m [38;5;28;01mreturn[39;00m [38;5;28mself[39m[38;5;241m.[39mdelete(indexer)
+
+[1;31mKeyError[0m: "['No es posible presentar los resultados...'] not found in axis"
+
